@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import ListItem from '../components/ListItem'
+import { useStateWithStorage } from '../hooks/use_state_with_storage'
 
 const Wrapper = styled.div`
   border: 10px solid black;
@@ -32,15 +33,18 @@ const TextArea = styled.textarea`
   height: 100%;
   outline: none;
 `
-
+const storageKey = 'pages/editor:memo'
 const editor = () => {
+  const [memo, setMemo] = useStateWithStorage("", storageKey)
   return (
     <>
       <Wrapper>
         <Side>
           <ListItem />
         </Side>
-        <TextArea/>
+        <TextArea value={memo} onChange={(e) => {
+          setMemo(e.target.value)
+        }} />
       </Wrapper>
     </>
   )
