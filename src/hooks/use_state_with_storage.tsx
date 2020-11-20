@@ -1,13 +1,23 @@
 import { useState } from 'react'
+import moment from 'moment'
 
-export const useStateWithStorage = (init: string, key: string): [string, (s: string) => void] => {
-  const [memo, setMemo] = useState<string>(localStorage.getItem(key) || init)
+interface Memo {
+  id: number
+  text: string
+  date: string
+}
 
-  const setMemoWithStorage = (nextMemo: string): void => {
-    // 再描画のキックをさせるためにsetMemoで変更する、そしてeditor側で再描画する際にはlocalstorageにないと駄目
-    setMemo(nextMemo)
-    localStorage.setItem(key, nextMemo)
+export const useStateWithStorage = (init: Memo[], key: string): [Memo[], (index: number, nextState: string) => void] => {
+  const [state, setState] = useState(JSON.parse(localStorage.getItem(key)) || init)
+  const setStateWithStorage = (index: number, nextText: string): void => {
+    // 再描画のキックをさせるためにsetStateで変更する、そしてeditor側で再描画する際にはlocalstorageにないと駄目
+    setState((prevState: Memo[]) => {
+      prevState[index].text = nextText
+      prevState[index].date = moment().format("YYYY-MM-DD HH:mm:ss");
+      localStorage.setItem(key, JSON.stringify(prevState))
+      return [...prevState]
+    })
   }
   // 描画の際の一度だけ意味のあるreturn
-  return [memo, setMemoWithStorage]
+  return [state, setStateWithStorage]
 }
