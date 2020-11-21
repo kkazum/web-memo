@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import moment from 'moment'
 
 interface Memo {
@@ -9,6 +9,9 @@ interface Memo {
 
 export const useStateWithStorage = (init: Memo[], key: string): [Memo[], (index: number, nextState: string) => void] => {
   const [state, setState] = useState(JSON.parse(localStorage.getItem(key)) || init)
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state))
+  },[])
   const setStateWithStorage = (index: number, nextText: string): void => {
     // 再描画のキックをさせるためにsetStateで変更する、そしてeditor側で再描画する際にはlocalstorageにないと駄目
     setState((prevState: Memo[]) => {
