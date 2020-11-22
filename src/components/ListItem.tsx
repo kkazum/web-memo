@@ -12,7 +12,7 @@ const Item = styled.div`
   background-color: #595757;
   color: #fff;
   font-size: 14px;
-  padding: 10px;
+  padding: 10px 50px 10px 10px;
   border: 1px grey solid;
   cursor: pointer;
   &:hover {
@@ -25,6 +25,7 @@ const ItemTop = styled.p`
   height: 50%;
   margin: 0;
   white-space: nowrap;
+  overflow: hidden;
 `
 
 const ItemBotton = styled.p`
