@@ -10,13 +10,12 @@ const NewButton = styled.button`
   color: #fff;
 `
 
-interface Props {
+interface ButtonProps {
   children: string
   dispatch: React.Dispatch<Action>
 }
 
-const Button = ( props: Props ) => {
-  const { children, dispatch } = props;
+const Button = ({ children, dispatch }: ButtonProps) => {
   return (
     <>
       <NewButton onClick={() => {
