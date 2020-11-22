@@ -11,10 +11,13 @@ const memos = (state: Memo[], action: Action) => {
       return [...state]
     case 'ADD_MEMO':
       const length = state.length
-      state.push({id: state[length - 1].id + 1, text: "", date: moment().format("YYYY-MM-DD HH:mm:ss")})
+      if(length == 0){
+        state.push({id: 1, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")})
+      }else{
+        state.push({id: state[length - 1].id + 1, text: "", date: moment().format("YYYY-MM-DD HH:mm:ss")})
+      }
       return [...state]
     case 'DELETE_MEMO':
-      console.log(action.index)
       state.splice(action.index, 1)
       localStorage.setItem(storageKey, JSON.stringify(state))
       return [...state]

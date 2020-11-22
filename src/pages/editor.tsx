@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import styled from 'styled-components'
 import ListItem from '../components/ListItem'
 import AppContext from '../contexts/AppContext'
@@ -61,6 +61,17 @@ const editor = () => {
   if(storageItem.length == 0){initialState = init} else{initialState = storageItem}
   const [state, dispatch] = useReducer(memos, initialState)
   const [target, setTarget] = useState<number>(0)
+  const [disabled, setDisabled] = useState<boolean>(false)
+
+  useEffect(() => {
+    if(state[target] == undefined){setTarget(target - 1)}
+    if(state.length == 0){
+      setDisabled(true)
+      setTarget(0)
+    }else {
+      setDisabled(false)
+    }
+  }, [state.length])
 
   return (
     <>
@@ -76,7 +87,7 @@ const editor = () => {
             })
           }
         </Side>
-        <TextArea onChange={(e) => {
+        <TextArea disabled={disabled} onChange={(e) => {
           dispatch({type: 'EDIT_MEMO' ,index: target, nextText: e.target.value})
         }} value={state[target] == undefined ? "" : state[target].text}  />
       </Wrapper>
