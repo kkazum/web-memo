@@ -56,9 +56,11 @@ const TextArea = styled.textarea`
 
 const editor = () => {
   const init: Memo[] = [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")}]
-  const initialState: Memo[] = JSON.parse(localStorage.getItem(storageKey)) || init
+  let initialState: Memo[];
+  let storageItem: Memo[] = JSON.parse(localStorage.getItem(storageKey)) || []
+  if(storageItem.length == 0){initialState = init} else{initialState = storageItem}
   const [state, dispatch] = useReducer(memos, initialState)
-  const [target, setTarget] = useState<number>(1)
+  const [target, setTarget] = useState<number>(0)
 
   return (
     <>
@@ -70,13 +72,13 @@ const editor = () => {
         <Side>
           {
             state.map((ele, index) => {
-              return(<ListItem key={index} memo={ele}/>)
+              return(<ListItem dispatch={dispatch} index={index} key={index} memo={ele}/>)
             })
           }
         </Side>
         <TextArea onChange={(e) => {
-          dispatch({type: 'EDIT_MEMO' ,index: target -1, nextText: e.target.value})
-        }} value={state[target - 1].text}  />
+          dispatch({type: 'EDIT_MEMO' ,index: target, nextText: e.target.value})
+        }} value={state[target] == undefined ? "" : state[target].text}  />
       </Wrapper>
     </AppContext.Provider>
     </>

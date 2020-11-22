@@ -13,6 +13,11 @@ const memos = (state: Memo[], action: Action) => {
       const length = state.length
       state.push({id: state[length - 1].id + 1, text: "", date: moment().format("YYYY-MM-DD HH:mm:ss")})
       return [...state]
+    case 'DELETE_MEMO':
+      console.log(action.index)
+      state.splice(action.index, 1)
+      localStorage.setItem(storageKey, JSON.stringify(state))
+      return [...state]
     default:
       return [...state]
   }
