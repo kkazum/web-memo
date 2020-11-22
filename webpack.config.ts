@@ -1,4 +1,7 @@
 const path = require('path')
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -16,10 +19,21 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    publicPath: 'dist/',
+    filename: 'popup.js',
+    publicPath: '/',
   },
+  plugins: [
+    new CopyWebpackPlugin({patterns: [
+      { from: 'src/public', to: '.'}
+    ]}),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'popup.html',
+    }),
+    new CleanWebpackPlugin()
+  ],
   devServer: {
+    contentBase: path.join(__dirname, 'src'),
     hot: true,
     open: true,
   }
