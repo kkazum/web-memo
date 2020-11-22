@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "web-memo",
+  "description": "create memos on web",
+  "version": "1.0.0",
+  "icons" : {
+    "48" : "book.png"
+  },
+  "browser_action": {
+		"default_title": "web-memo",
+		"default_popup": "popup.html"
+	},
+	"permissions": ["activeTab"]
+}

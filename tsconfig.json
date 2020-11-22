@@ -4,6 +4,8 @@
     "outDir": "./dist/",
     "target": "ES2015",
     "jsx": "react",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
   }
 }
