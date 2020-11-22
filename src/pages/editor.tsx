@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import styled from 'styled-components'
 import ListItem from '../components/ListItem'
-import { useStateWithStorage } from '../hooks/use_state_with_storage'
 import AppContext from '../contexts/AppContext'
 import moment from 'moment'
 import Button from '../components/Button'
+import memos from '../reducers/index'
+import { Memo, storageKey } from '../utils'
+
 const Wrapper = styled.div`
   border: 1px solid black;
   background-color: #303030;
@@ -52,9 +54,10 @@ const TextArea = styled.textarea`
   color: white;
 `
 
-const storageKey = 'pages/editor:memo'
 const editor = () => {
-  const [state, setState] = useStateWithStorage([{id: 1, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")}, {id: 2, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")}], storageKey)
+  const init: Memo[] = [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")}]
+  const initialState: Memo[] = JSON.parse(localStorage.getItem(storageKey)) || init
+  const [state, dispatch] = useReducer(memos, initialState)
   const [target, setTarget] = useState<number>(1)
 
   return (
@@ -62,7 +65,7 @@ const editor = () => {
     <AppContext.Provider value={[target, setTarget]}>
       <Wrapper>
         <ButtonWrapper >
-          <Button storageKey={storageKey}>新規メモを追加</Button>
+          <Button dispatch={dispatch} >新規メモを追加</Button>
         </ButtonWrapper>
         <Side>
           {
@@ -72,7 +75,7 @@ const editor = () => {
           }
         </Side>
         <TextArea onChange={(e) => {
-          setState(target - 1,e.target.value)
+          dispatch({type: 'EDIT_MEMO' ,index: target -1, nextText: e.target.value})
         }} value={state[target - 1].text}  />
       </Wrapper>
     </AppContext.Provider>

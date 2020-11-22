@@ -1,6 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import AppContext from '../contexts/AppContext'
+import { Action } from '../utils'
+
 
 const NewButton = styled.button`
   background-color: #0071b2;
@@ -8,24 +9,18 @@ const NewButton = styled.button`
   width: 100%;
   color: #fff;
 `
-interface Props {
-  storageKey: string
-  children: string
-}
 
-interface Memo {
-  id: number
-  text: string
-  date: string
+interface Props {
+  children: string
+  dispatch: React.Dispatch<Action>
 }
 
 const Button = ( props: Props ) => {
-  const { storageKey, children } = props;
+  const { children, dispatch } = props;
   return (
     <>
       <NewButton onClick={() => {
-        const memos: Memo[] = JSON.parse(localStorage.getItem(storageKey))
-        memos.push
+        dispatch({type: 'ADD_MEMO'})
       }}>{children}</NewButton>
     </>
   )
