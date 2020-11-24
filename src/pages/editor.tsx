@@ -5,7 +5,7 @@ import AppContext from '../contexts/AppContext'
 import moment from 'moment'
 import Button from '../components/Button'
 import memos from '../reducers/index'
-import { Memo, storageKey } from '../utils'
+import { Memo, storageKey, dateFormat, EDIT_MEMO } from '../utils'
 
 const Wrapper = styled.div`
   border: 1px solid black;
@@ -54,46 +54,43 @@ const TextArea = styled.textarea`
   color: white;
 `
 
-const editor = () => {
-  const init: Memo[] = [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format("YYYY-MM-DD HH:mm:ss")}]
+const editor = ({init}) => {
   let initialState: Memo[];
   let storageItem: Memo[] = JSON.parse(localStorage.getItem(storageKey)) || []
   if(storageItem.length == 0){initialState = init} else{initialState = storageItem}
   const [state, dispatch] = useReducer(memos, initialState)
   const [target, setTarget] = useState<number>(0)
-  const [disabled, setDisabled] = useState<boolean>(false)
 
   useEffect(() => {
-    if(state[target] == undefined){setTarget(target - 1)}
-    if(state.length == 0){
-      setDisabled(true)
-      setTarget(0)
-    }else {
-      setDisabled(false)
-    }
+    if(state[target] == undefined) setTarget(target - 1)
+    if(state.length == 0) setTarget(0)
   }, [state.length])
 
   return (
     <>
-    <AppContext.Provider value={[target, setTarget]}>
+    <AppContext.Provider value={{target, setTarget, state, dispatch}}>
       <Wrapper>
         <ButtonWrapper >
-          <Button dispatch={dispatch} >新規メモを追加</Button>
+          <Button>新規メモを追加</Button>
         </ButtonWrapper>
         <Side>
           {
             state.map((ele, index) => {
-              return(<ListItem dispatch={dispatch} index={index} key={index} memo={ele}/>)
+              return(<ListItem index={index} key={index} memo={ele}/>)
             })
           }
         </Side>
-        <TextArea disabled={disabled} onChange={(e) => {
-          dispatch({type: 'EDIT_MEMO' ,index: target, nextText: e.target.value})
+        <TextArea disabled={state.length == 0} onChange={(e) => {
+          dispatch({type: EDIT_MEMO ,index: target, nextText: e.target.value})
         }} value={state[target] == undefined ? "" : state[target].text}  />
       </Wrapper>
     </AppContext.Provider>
     </>
   )
+}
+
+editor.defaultProps = {
+  init: [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format(dateFormat)}]
 }
 
 export default editor

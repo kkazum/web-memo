@@ -13,4 +13,10 @@ export interface Action {
   date?: string
 }
 
+export const dateFormat = "YYYY-MM-DD HH:mm:ss"
+
 export const storageKey: string = 'pages/editor:memo'
+
+export const EDIT_MEMO = 'EDIT_MEMO'
+export const ADD_MEMO = 'ADD_MEMO'
+export const DELETE_MEMO = 'DELETE_MEMO'

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import AppContext from '../contexts/AppContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { Memo, Action } from '../utils'
+import { Memo, DELETE_MEMO } from '../utils'
 
 const Item = styled.div`
   position: relative;
@@ -47,12 +47,11 @@ const TrashIcon = styled(FontAwesomeIcon)`
 interface ListItemProps {
   memo: Memo
   index: number
-  dispatch: React.Dispatch<Action>
 }
 
-const ListItem = ({memo, index, dispatch}: ListItemProps) => {
+const ListItem = ({memo, index}: ListItemProps) => {
   const {text, date} = memo
-  const [target, setTarget] = useContext(AppContext)
+  const {setTarget , dispatch} = useContext(AppContext)
   return (
     <>
      <Item onClick={() => {
@@ -60,7 +59,7 @@ const ListItem = ({memo, index, dispatch}: ListItemProps) => {
      }}>
         <ItemTop>{text}</ItemTop>
         <ItemBotton>{date}</ItemBotton>
-        <TrashIcon onClick={() => dispatch({type: 'DELETE_MEMO', index: index})} color={"white"} icon={faTrashAlt} />
+        <TrashIcon onClick={() => dispatch({type: DELETE_MEMO, index: index})} color={"white"} icon={faTrashAlt} />
      </Item>
     </>
   )

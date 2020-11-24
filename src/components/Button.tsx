@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
-import { Action } from '../utils'
-
+import { ADD_MEMO } from '../utils'
+import AppContext from '../contexts/AppContext'
 
 const NewButton = styled.button`
   background-color: #0071b2;
@@ -12,14 +12,14 @@ const NewButton = styled.button`
 
 interface ButtonProps {
   children: string
-  dispatch: React.Dispatch<Action>
 }
 
-const Button = ({ children, dispatch }: ButtonProps) => {
+const Button = ({ children }: ButtonProps) => {
+  const { dispatch } = useContext(AppContext)
   return (
     <>
       <NewButton onClick={() => {
-        dispatch({type: 'ADD_MEMO'})
+        dispatch({type: ADD_MEMO})
       }}>{children}</NewButton>
     </>
   )
