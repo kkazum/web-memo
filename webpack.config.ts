@@ -30,7 +30,7 @@ module.exports = {
       template: './src/index.html',
       filename: 'popup.html',
     }),
-    new CleanWebpackPlugin()
+    // new CleanWebpackPlugin()
   ],
   devServer: {
     contentBase: path.join(__dirname, 'src'),

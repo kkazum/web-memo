@@ -4,8 +4,8 @@ import ListItem from '../components/ListItem'
 import AppContext from '../contexts/AppContext'
 import moment from 'moment'
 import Button from '../components/Button'
-import memos from '../reducers/index'
-import { Memo, storageKey, dateFormat, EDIT_MEMO } from '../utils'
+import reducer from '../reducers'
+import { storageKey, dateFormat, EDIT_MEMO, MemoState } from '../utils'
 
 const Wrapper = styled.div`
   border: 1px solid black;
@@ -55,16 +55,17 @@ const TextArea = styled.textarea`
 `
 
 const editor = ({init}) => {
-  let initialState: Memo[];
-  let storageItem: Memo[] = JSON.parse(localStorage.getItem(storageKey)) || []
-  if(storageItem.length == 0){initialState = init} else{initialState = storageItem}
-  const [state, dispatch] = useReducer(memos, initialState)
-  const [target, setTarget] = useState<number>(0)
+  let initialState: MemoState;
+  let storageItem: MemoState = JSON.parse(localStorage.getItem(storageKey)) || {memos:[]}
+  if(storageItem.memos.length == 0){initialState = init} else{initialState = storageItem}
+  const [state, dispatch] = useReducer(reducer, initialState)
+  localStorage.setItem(storageKey, JSON.stringify(state))
 
+  const [target, setTarget] = useState<number>(0)
   useEffect(() => {
-    if(state[target] == undefined) setTarget(target - 1)
-    if(state.length == 0) setTarget(0)
-  }, [state.length])
+    if(state.memos[target] == undefined) setTarget(target - 1)
+    if(state.memos.length == 0) setTarget(0)
+  }, [state.memos])
 
   return (
     <>
@@ -75,14 +76,14 @@ const editor = ({init}) => {
         </ButtonWrapper>
         <Side>
           {
-            state.map((ele, index) => {
+            state.memos.map((ele, index) => {
               return(<ListItem index={index} key={index} memo={ele}/>)
             })
           }
         </Side>
-        <TextArea disabled={state.length == 0} onChange={(e) => {
+        <TextArea disabled={state.memos.length == 0} onChange={(e) => {
           dispatch({type: EDIT_MEMO ,index: target, nextText: e.target.value})
-        }} value={state[target] == undefined ? "" : state[target].text}  />
+        }} value={state.memos[target] == undefined ? "" : state.memos[target].text}  />
       </Wrapper>
     </AppContext.Provider>
     </>
@@ -90,7 +91,9 @@ const editor = ({init}) => {
 }
 
 editor.defaultProps = {
-  init: [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format(dateFormat)}]
+  init: {
+    memos: [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format(dateFormat)}]
+  }
 }
 
 export default editor

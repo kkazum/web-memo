@@ -6,6 +6,10 @@ export interface Memo {
   date: string;
 }
 
+export interface MemoState {
+  memos : Memo[]
+}
+
 export interface Action {
   type: string
   index?: number
