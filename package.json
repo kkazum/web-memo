@@ -1,8 +1,6 @@
 {
   "name": "web-memo",
   "version": "1.0.0",
-  "repository": "https://github.com/kkazum/web-memo.git",
-  "author": "kkazum <49956319+kkazum@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",

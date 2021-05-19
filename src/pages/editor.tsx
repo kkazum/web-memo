@@ -1,11 +1,11 @@
-import React, { useState, useReducer, useEffect } from 'react'
-import styled from 'styled-components'
-import ListItem from '../components/ListItem'
-import AppContext from '../contexts/AppContext'
-import moment from 'moment'
-import Button from '../components/Button'
-import reducer from '../reducers'
-import { storageKey, dateFormat, EDIT_MEMO, MemoState } from '../utils'
+import React, { useState, useReducer, useEffect } from 'react';
+import styled from 'styled-components';
+import ListItem from '../components/ListItem';
+import AppContext from '../contexts/AppContext';
+import moment from 'moment';
+import Button from '../components/Button';
+import reducer from '../reducers';
+import { storageKey, dateFormat, EDIT_MEMO, MemoState } from '../utils';
 
 const Wrapper = styled.div`
   border: 1px solid black;
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   position: fixed;
   right: 0;
   top: 0;
-`
+`;
 
 const Side = styled.div`
   bottom: 0;
@@ -25,7 +25,7 @@ const Side = styled.div`
   width: 50%;
   height: calc(100% - 30px);
   overflow: scroll;
-`
+`;
 
 const ButtonWrapper = styled.div`
   left: 0;
@@ -38,7 +38,7 @@ const ButtonWrapper = styled.div`
   &:hover {
     border: none;
   }
-`
+`;
 
 const TextArea = styled.textarea`
   bottom: 0;
@@ -52,48 +52,65 @@ const TextArea = styled.textarea`
   outline: none;
   background-color: #303030;
   color: white;
-`
+`;
 
-const editor = ({init}) => {
+const editor = (props: MemoState) => {
   let initialState: MemoState;
-  let storageItem: MemoState = JSON.parse(localStorage.getItem(storageKey)) || {memos:[]}
-  if(storageItem.memos.length == 0){initialState = init} else{initialState = storageItem}
-  const [state, dispatch] = useReducer(reducer, initialState)
-  localStorage.setItem(storageKey, JSON.stringify(state))
+  let storageItem: MemoState = JSON.parse(
+    localStorage.getItem(storageKey)!
+  ) || { memos: [] };
+  if (!storageItem.memos.length) {
+    initialState = props;
+  } else {
+    initialState = storageItem;
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+  localStorage.setItem(storageKey, JSON.stringify(state));
 
-  const [target, setTarget] = useState<number>(0)
+  const [target, setTarget] = useState<number>(0);
   useEffect(() => {
-    if(state.memos[target] == undefined) setTarget(target - 1)
-    if(state.memos.length == 0) setTarget(0)
-  }, [state.memos])
+    if (!state.memos[target]) setTarget(target - 1);
+    if (!state.memos.length) setTarget(0);
+  }, [state.memos]);
 
   return (
     <>
-    <AppContext.Provider value={{target, setTarget, state, dispatch}}>
-      <Wrapper>
-        <ButtonWrapper >
-          <Button>新規メモを追加</Button>
-        </ButtonWrapper>
-        <Side>
-          {
-            state.memos.map((ele, index) => {
-              return(<ListItem index={index} key={index} memo={ele}/>)
-            })
-          }
-        </Side>
-        <TextArea disabled={state.memos.length == 0} onChange={(e) => {
-          dispatch({type: EDIT_MEMO ,index: target, nextText: e.target.value})
-        }} value={state.memos[target] == undefined ? "" : state.memos[target].text}  />
-      </Wrapper>
-    </AppContext.Provider>
+      <AppContext.Provider value={{ target, setTarget, state, dispatch }}>
+        <Wrapper>
+          <ButtonWrapper>
+            <Button>新規メモを追加</Button>
+          </ButtonWrapper>
+          <Side>
+            {state.memos.map((ele, index) => {
+              return <ListItem index={index} key={index} memo={ele} />;
+            })}
+          </Side>
+          <TextArea
+            autoFocus={true}
+            disabled={!state.memos.length}
+            onChange={(e) => {
+              dispatch({
+                type: EDIT_MEMO,
+                index: target,
+                nextText: e.target.value,
+              });
+            }}
+            value={!state.memos[target] ? '' : state.memos[target].text}
+          />
+        </Wrapper>
+      </AppContext.Provider>
     </>
-  )
-}
+  );
+};
 
 editor.defaultProps = {
-  init: {
-    memos: [{id: 1, text: "ブラウザで使用できるメモです", date: moment().format(dateFormat)}]
-  }
-}
+  memos: [
+    {
+      id: 1,
+      text: 'ブラウザで使用できるメモです',
+      date: moment().format(dateFormat),
+    },
+  ],
+};
 
-export default editor
+export default editor;

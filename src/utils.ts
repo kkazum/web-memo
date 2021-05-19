@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 export interface Memo {
   id: number;
   text: string;

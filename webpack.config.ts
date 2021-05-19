@@ -27,6 +27,7 @@ module.exports = {
       { from: 'src/public', to: '.'}
     ]}),
     new HtmlWebpackPlugin({
+      inject: 'body',
       template: './src/index.html',
       filename: 'popup.html',
     }),

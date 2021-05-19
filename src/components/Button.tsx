@@ -14,7 +14,7 @@ interface ButtonProps {
   children: string
 }
 
-const Button = ({ children }: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({ children }) => {
   const { dispatch } = useContext(AppContext)
   return (
     <>
